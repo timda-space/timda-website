@@ -62,7 +62,7 @@ The logic is in `hub/` (tested with `node --test hub/*.test.mjs tools/*.test.mjs
 **Setup (once):**
 
 1. Workers & Pages → **KV** → Create two namespaces: `timda-registry` (production) and `timda-registry-staging` (staging).
-2. The `timda-hub` Pages project → Settings → **Bindings** → Add → KV namespace. Variable name `REGISTRY`: namespace `timda-registry` for **production**, and `timda-registry-staging` for **preview**.
+2. The `timda-station` Pages project → Settings → **Bindings** → Add → KV namespace. Variable name `REGISTRY`: namespace `timda-registry` for **production**, and `timda-registry-staging` for **preview**.
 3. Redeploy. The next push does it.
 
 `hub/timda1.mjs` is a copy of `tools/timda1.mjs` from the timda.space repo, and a test checks it hasn't drifted when both repos are checked out side by side.
@@ -76,7 +76,7 @@ When a new Section docks and waits for review, the hub emails the operator. Page
 1. Deploy the Worker, either way:
    - **Command line:** `cd workers/notify && npx wrangler deploy`, then `npx wrangler secret put TO` and enter your verified destination address.
    - **Dashboard:** Workers & Pages → Create → Worker named `timda-notify`, with `index.js` pasted in. Under Settings, add a **Send email** binding `EMAIL`, a variable `FROM` = `board@timda.space`, and a secret `TO` set to your address. Turn off the `workers.dev` and preview URLs.
-2. The `timda-hub` Pages project → Settings → **Bindings** → Add → Service binding. Variable name `NOTIFY`, service `timda-notify`, for **production and preview**. Staging's emails say which host they came from.
+2. The `timda-station` Pages project → Settings → **Bindings** → Add → Service binding. Variable name `NOTIFY`, service `timda-notify`, for **production and preview**. Staging's emails say which host they came from.
 3. Redeploy.
 
 ## Launch button
@@ -120,12 +120,12 @@ The Cloudflare side (this site's Pages project, the staging domain, zone setting
 
 ## Deploy (Cloudflare Pages)
 
-The `timda-hub` Pages project (connected to this repo) serves `public/` (no build command; the pages are built and committed) and runs `functions/`. `public/_headers` sets the security headers on static files; `hub/routes.mjs` sets them on Function responses.
+The `timda-station` Pages project (connected to this repo) serves `public/` (no build command; the pages are built and committed) and runs `functions/`. `public/_headers` sets the security headers on static files; `hub/routes.mjs` sets them on Function responses.
 
 | Branch | Deploys to | KV bound as `REGISTRY` |
 | --- | --- | --- |
 | `main` | production: `timda.space` | `timda-registry` |
-| `staging` | preview: `staging.timda.space` (a CNAME to `staging.timda-hub.pages.dev`) | `timda-registry-staging` |
+| `staging` | preview: `staging.timda.space` (a CNAME to `staging.timda-station.pages.dev`) | `timda-registry-staging` |
 
 Preview builds are limited to `staging` (Settings → Builds → Branch control → Custom branches), so other branches don't get public preview URLs. Cloudflare builds a branch on the next push after it's allowed.
 

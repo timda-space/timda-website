@@ -69,8 +69,6 @@ The build also fingerprints the stylesheet (`/style.css?v=<hash>`), so a changed
 
 Every place has its own page at `/<slug>`. Every page carries the station directory as a drop-down (the map plus a list), with the current place marked "you are here": its box turns orange on the map, or for the Ivory Tower the whole spine.
 
-[(top)](#timda-hub)
-
 ## The hub (Pages Functions)
 
 The site stays static and ships no JavaScript to browsers. A few routes run as Cloudflare Pages Functions, which is code at Cloudflare, not in the visitor's browser:
@@ -99,8 +97,6 @@ The logic is in `hub/` (tested with `node --test hub/*.test.mjs tools/*.test.mjs
 
 `hub/timda1.mjs` is a copy of `tools/timda1.mjs` from the timda.space repo, and a test checks it hasn't drifted when both repos are checked out side by side.
 
-[(top)](#timda-hub)
-
 ## Pruning old deployments
 
 Cloudflare keeps every Pages deployment live, with the code and bindings it was built with. A small scheduled Worker in `workers/prune/` (`timda-prune`, daily) keeps the newest 10 per environment (production and preview) and deletes the rest. It never deletes the project's current live deployment. It starts in dry-run mode, logging what it would delete.
@@ -110,8 +106,6 @@ Cloudflare keeps every Pages deployment live, with the code and bindings it was 
 1. Dashboard → My Profile → API Tokens → Create Token → Custom, with one permission: **Account → Cloudflare Pages → Edit**, limited to your account.
 2. `cd workers/prune && npx wrangler deploy`, then `npx wrangler secret put CF_API_TOKEN` and `npx wrangler secret put ACCOUNT_ID`.
 3. Watch the first run with `npx wrangler tail` (or trigger it from the Worker's Settings → Triggers). When the "would delete" lines look right, set `DRY_RUN = "false"` in `wrangler.toml` and deploy again.
-
-[(top)](#timda-hub)
 
 ## Review notifications
 
@@ -125,8 +119,6 @@ When a new Section docks and waits for review, the hub emails the operator. Page
 2. The `timda-station` Pages project → Settings → **Bindings** → Add → Service binding. Variable name `NOTIFY`, service `timda-notify`, for **production and preview**. Staging's emails say which host they came from.
 3. Redeploy.
 
-[(top)](#timda-hub)
-
 ## Launch button
 
 `public/ring/timda-88x31.png` (and the 2x `timda-176x62.png`) is the 88x31 button Sections put on their sites; `/dock` explains how. It and `public/apple-touch-icon.png` are drawn from `favicon.svg` and Silkscreen, never from the station art, and every pixel is snapped to the palette. To redraw them:
@@ -135,19 +127,13 @@ When a new Section docks and waits for review, the hub emails the operator. Page
 node tools/render-badge.mjs
 ```
 
-[(top)](#timda-hub)
-
 ## Section buttons
 
 A Section can publish `_button._timda.<domain>` (TIMDA-1 §6.1). `checkedSection` fetches it with the record check (no redirects, 16 KiB cap), keeps it only if `checkButtonImage` passes, and caches it with the check (at the edge, like the check itself). `/buttons/<domain>` (`functions/buttons/[domain].js`) serves that copy, and only for approved Sections. The HyperMall links to `/buttons/<domain>?v=<hash>`, never to the Section.
 
-[(top)](#timda-hub)
-
 ## The Observation Lounge
 
 Open Sections that publish `_banner._timda.<domain>` (TIMDA-1 §6.2: a 468x60 PNG or GIF, optional `caption=`) are shown in `/lounge`, one at a time. The banner is fetched and checked with the record check, like the button, and served at `/banners/<domain>`. Each load shows a random one. `?rotate` opts in to an HTTP `Refresh: 60` header (only when there's more than one banner); it's off by default, since a page that reloads itself loses a screen reader's place (WCAG 2.2.2). `?hold=<domain>` holds one and stops the refresh.
-
-[(top)](#timda-hub)
 
 ## Station map
 
@@ -160,8 +146,6 @@ $ npm --prefix tools install playwright && npx --prefix tools playwright install
 
 Hover over a box (with a mouse), or tap or Tab to it, and a callout shows the place's full name. The callout links to that place's page. That's pure CSS (`:hover`, `:focus-within`). Map node ids match `pages/places.json`, which supplies the names and pages. The map is our own diagram of the station anatomy, not a tracing of the art.
 
-[(top)](#timda-hub)
-
 ## Run locally
 
 ```console
@@ -170,13 +154,9 @@ $ cd public && python3 -m http.server 8787
 
 Then open <http://127.0.0.1:8787/>. Python's server needs the `.html` on inner pages (`/hypermall.html`); Cloudflare serves them at `/hypermall`. The `_headers` file only takes effect on Cloudflare.
 
-[(top)](#timda-hub)
-
 ## Infrastructure
 
 The Cloudflare side (this site's Pages project, the staging domain, zone settings, and the hub's TIMDA-1 records) is managed with OpenTofu in the `timda.space` repo, under `infra/`.
-
-[(top)](#timda-hub)
 
 ## Deploy (Cloudflare Pages)
 
@@ -193,8 +173,6 @@ Every host but `timda.space` gets an amber **STAGING** (or **PREVIEW**) bar and 
 
 Work goes to `staging` by pull request, is tried on staging.timda.space, and is released to `main` by a pull request from `staging`.
 
-[(top)](#timda-hub)
-
 ## Notes
 
 - **Station art:** made with the [Space Station Generator](https://uselesspursuit.itch.io/space-station-generator) by uselesspursuit (credited in the footer). `art/station.png` was recovered from a screenshot of the generated art (3 screen pixels per art pixel, 320×180 canvas, near-duplicate colours merged). Re-export it from the generator at 1× (320×180) to replace it, then rebuild the titled version:
@@ -207,8 +185,6 @@ Work goes to `staging` by pull request, is tried on staging.timda.space, and is 
 - **Titled art:** `tools/make-titled-art.py` can extend the art to 320x200 with the name lettered in, but the art's licence (NoDerivatives) means that version can't be published without the generator authors' permission. It writes to `build/`, which isn't deployed.
 - **No names:** the site carries no names or handles. Identity in TIMDA is a domain plus a public key.
 
-[(top)](#timda-hub)
-
 ## Licences
 
 - **The hub** (code in `functions/`, `hub/`, `tools/`, `workers/`): [AGPL-3.0](LICENSE). Run your own hub, change it, share it; if you run a changed hub for others, share your changes too.
@@ -217,5 +193,3 @@ Work goes to `staging` by pull request, is tried on staging.timda.space, and is 
 - **Not ours, under their own terms:**
   - The station art, from the [Space Station Generator](https://uselesspursuit.itch.io/space-station-generator): [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/).
   - The fonts: SIL Open Font License, with each font's licence in `public/fonts/`.
-
-[(top)](#timda-hub)

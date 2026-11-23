@@ -1,6 +1,35 @@
-# timda-website
+<p align="center">
+  <img src="public/art/station.png" width="640" alt="TIMDA: pixel art of a retro-futurist space station">
+</p>
 
-The TIMDA hub site: the main concourse at `timda.space`. Concepts, specs and governance live in the separate `timda.space` repo.
+<h1 align="center">TIMDA hub</h1>
+
+<p align="center">
+  <strong>A webring as objet d'art.</strong><br>
+  A living, interactive art installation shaped like a space station.<br>
+  Sites dock as "Sections" with a few DNS records and a signed request. No accounts, no JavaScript, everything opt-in.
+</p>
+
+<p align="center">
+  <a href="https://timda.space">timda.space</a> ·
+  <a href="https://timda.space/dock">Dock a Section</a> ·
+  <a href="https://github.com/timda-space/timda.space">Specs, docs and CLI</a>
+</p>
+
+<p align="center">
+  <a href="https://timda.space/random"><img align="middle" src="public/ring/timda-176x62.png" width="88" height="31" alt="TIMDA: launch to a random Section"></a>
+  <a href="https://github.com/timda-space/timda-website/actions/workflows/test.yml"><img align="middle" src="https://github.com/timda-space/timda-website/actions/workflows/test.yml/badge.svg?branch=main" alt="test status"></a>
+</p>
+
+---
+
+This is the code for the hub at `timda.space`: the main concourse of the station. **Technocratic Incorporated Multi-node Digital Astrodrome** (TIMDA) is a webring with the volume turned up: your site is a Section that docks to the station, visitors wander between Sections, and the more Sections there are, the more inhabited it feels. Concepts, specs and governance live in the separate [`timda.space`](https://github.com/timda-space/timda.space) repo.
+
+**Want to dock a Section?** You don't need this repo. Read the [docking guide](https://github.com/timda-space/timda.space/blob/main/guides/docking.md) or go to [timda.space/dock](https://timda.space/dock). You publish a few DNS TXT records, then send a signed dock request.
+
+Like the button above? Put it on your own site (host your own copy; `/dock` has the snippet).
+
+**Contributing:** feedback, issues and PRs are welcome. Sections are anonymous; the project isn't, so contribute under your own account. See [`AGENTS.md`](AGENTS.md) for how the repo works and how to build and test.
 
 ## Layout
 
@@ -15,6 +44,7 @@ map/
   station-map.svg  rendered map (generated)
 hub/               the hub's logic: DNS lookups, TIMDA-2 signatures, registry, listings, Wormhole Post mail (+ tests)
 workers/notify/    a tiny Worker that emails the operator about new dock requests
+workers/prune/     a scheduled Worker that keeps only the newest deployments of the Pages project
 functions/         Cloudflare Pages Functions: thin wrappers around hub/routes.mjs
 public/            everything that gets deployed (the .html files are generated)
   style.css        styles; palette sampled from the station art
@@ -66,6 +96,16 @@ The logic is in `hub/` (tested with `node --test hub/*.test.mjs tools/*.test.mjs
 3. Redeploy. The next push does it.
 
 `hub/timda1.mjs` is a copy of `tools/timda1.mjs` from the timda.space repo, and a test checks it hasn't drifted when both repos are checked out side by side.
+
+## Pruning old deployments
+
+Cloudflare keeps every Pages deployment live, with the code and bindings it was built with. A small scheduled Worker in `workers/prune/` (`timda-prune`, daily) keeps the newest 10 per environment (production and preview) and deletes the rest. It never deletes the project's current live deployment. It starts in dry-run mode, logging what it would delete.
+
+**Setup (once):**
+
+1. Dashboard → My Profile → API Tokens → Create Token → Custom, with one permission: **Account → Cloudflare Pages → Edit**, limited to your account.
+2. `cd workers/prune && npx wrangler deploy`, then `npx wrangler secret put CF_API_TOKEN` and `npx wrangler secret put ACCOUNT_ID`.
+3. Watch the first run with `npx wrangler tail` (or trigger it from the Worker's Settings → Triggers). When the "would delete" lines look right, set `DRY_RUN = "false"` in `wrangler.toml` and deploy again.
 
 ## Review notifications
 
@@ -153,4 +193,3 @@ Work goes to `staging` by pull request, is tried on staging.timda.space, and is 
 - **Not ours, under their own terms:**
   - The station art, from the [Space Station Generator](https://uselesspursuit.itch.io/space-station-generator): [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/).
   - The fonts: SIL Open Font License, with each font's licence in `public/fonts/`.
-

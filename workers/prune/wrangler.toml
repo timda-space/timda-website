@@ -1,0 +1,20 @@
+# Deploy from this folder with: npx wrangler deploy
+# then set the two secrets (kept out of the repo):
+#   npx wrangler secret put CF_API_TOKEN   # a token scoped to Cloudflare Pages: Edit, and nothing else
+#   npx wrangler secret put ACCOUNT_ID
+name = "timda-prune"
+main = "index.js"
+compatibility_date = "2026-11-01"
+workers_dev = false        # no public URL: it only runs on its schedule
+preview_urls = false
+
+[triggers]
+crons = ["17 5 * * *"]     # daily, 05:17 UTC
+
+[vars]
+PROJECT = "timda-station"
+KEEP = "10"                # newest deployments kept, per environment
+DRY_RUN = "true"           # only log what would be deleted; set "false" to delete for real
+
+[observability]
+enabled = true

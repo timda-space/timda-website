@@ -15,6 +15,7 @@ map/
   station-map.svg  rendered map (generated)
 hub/               the hub's logic: DNS lookups, TIMDA-2 signatures, registry, listings, Wormhole Post mail (+ tests)
 workers/notify/    a tiny Worker that emails the operator about new dock requests
+workers/prune/     a scheduled Worker that keeps only the newest deployments of the Pages project
 functions/         Cloudflare Pages Functions: thin wrappers around hub/routes.mjs
 public/            everything that gets deployed (the .html files are generated)
   style.css        styles; palette sampled from the station art
@@ -66,6 +67,16 @@ The logic is in `hub/` (tested with `node --test hub/*.test.mjs tools/*.test.mjs
 3. Redeploy. The next push does it.
 
 `hub/timda1.mjs` is a copy of `tools/timda1.mjs` from the timda.space repo, and a test checks it hasn't drifted when both repos are checked out side by side.
+
+## Pruning old deployments
+
+Cloudflare keeps every Pages deployment live, with the code and bindings it was built with. A small scheduled Worker in `workers/prune/` (`timda-prune`, daily) keeps the newest 10 per environment (production and preview) and deletes the rest. It never deletes the project's current live deployment. It starts in dry-run mode, logging what it would delete.
+
+**Setup (once):**
+
+1. Dashboard → My Profile → API Tokens → Create Token → Custom, with one permission: **Account → Cloudflare Pages → Edit**, limited to your account.
+2. `cd workers/prune && npx wrangler deploy`, then `npx wrangler secret put CF_API_TOKEN` and `npx wrangler secret put ACCOUNT_ID`.
+3. Watch the first run with `npx wrangler tail` (or trigger it from the Worker's Settings → Triggers). When the "would delete" lines look right, set `DRY_RUN = "false"` in `wrangler.toml` and deploy again.
 
 ## Review notifications
 

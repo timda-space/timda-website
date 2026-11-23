@@ -27,6 +27,7 @@ Principles. Don't break these:
 | `hub/*.mjs` | The hub's logic, with tests |
 | `functions/` | Thin Pages Functions wrappers around `hub/routes.mjs` |
 | `workers/notify/` | The `timda-notify` Worker (Email Routing) that sends review emails |
+| `workers/prune/` | The `timda-prune` scheduled Worker that keeps the newest 10 Pages deployments per environment (dry run until `DRY_RUN` is `"false"`) |
 | `specs/`, `hub/timda1.mjs`, `hub/sshsig.mjs` | **Vendored copies** of timda.space's originals. Change them there, not here; a drift test fails if they differ. |
 
 Cloudflare bindings: `REGISTRY` (KV: `timda-registry` in production, `timda-registry-staging` in preview) and `NOTIFY` (service binding to `timda-notify`). No build command; output directory `public`. Every host except `timda.space` shows a STAGING/PREVIEW bar.

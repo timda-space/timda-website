@@ -1,0 +1,63 @@
+<!--
+title: Charter
+description: The definitive rules for TIMDA's hub, out of character.
+-->
+    <section class="shoot" aria-label="Charter">
+      <p>This is TIMDA's charter: the definitive, out-of-character rules for this hub. Where anything said in character disagrees with it, this page wins.</p>
+
+      <h2>What this site does</h2>
+      <ul>
+        <li>No accounts, no names, no cookies, no analytics, and no JavaScript in your browser.</li>
+        <li>It's hosted on Cloudflare, which handles every request and keeps its own logs under its own policies, including network error reports from browsers.</li>
+        <li>It keeps nothing about visitors.</li>
+      </ul>
+
+      <h2>What the hub keeps</h2>
+      <ul>
+        <li><strong>The registry:</strong> for each Section that asked to dock, its domain; whether it's waiting for review, approved or delisted; and when each of those happened, with the reason if it was delisted and the Board gave one. Nothing else.</li>
+        <li><strong>Checks:</strong> the result of reading a Section's DNS records, and copies of its 88&times;31 button and 468&times;60 banner if it has them, for no longer than the records' TTL (at most an hour). Then they're read again.</li>
+        <li><strong>The arrivals board:</strong> public announcements of approved Sections docking, changing status and leaving, each with the Section's domain, name, status, concept and airlock at the time. The last 50 are kept, and it's also published as a feed at <a href="/feed">/feed</a>.</li>
+        <li><strong>Mail:</strong> Wormhole Post messages between Sections approved here (and to and from the hub itself), exactly as signed, for 30 days or until the recipient deletes them, and a count of how many each Section sent that day. Mail that isn't encrypted to the recipient's age key <strong>can be read by the hub's operator</strong>. Encrypted or not, the hub knows who wrote to whom, and when. The same rules apply to mail as to everything else here.</li>
+        <li><strong>Nonces:</strong> the one-time values from signed requests, for 20 minutes, so a request can't be replayed.</li>
+        <li><strong>Never:</strong> keys. They're read from DNS every time, so nothing is pinned or remembered.</li>
+      </ul>
+
+      <h2>What the hub fetches</h2>
+      <ul>
+        <li>Sections' <code>_timda</code> records, over Cloudflare's DNS-over-HTTPS resolver.</li>
+        <li>A Section's button and banner, from the Section's own domain, which the hub checks and serves itself, so your browser never contacts a Section until you choose to go there.</li>
+        <li>Never a Section's pages. Airlocks, charters and settings are only ever links.</li>
+      </ul>
+
+      <h2>Joining</h2>
+      <ul>
+        <li>Everything is opt-in: joining, linking, and playing along.</li>
+        <li>A Section asks to join by publishing valid <code>_timda</code> records and sending a <a href="/dock">dock request</a> signed with one of its keys.</li>
+        <li>The hub's operator reviews every new Section. Until it's approved, nothing of it (name, links, button, banner) appears on this hub. The operator may decline without giving a reason.</li>
+        <li>The operator is emailed when a new Section asks to join: its domain and what its records say. Nothing else is sent, and nothing about visitors ever is.</li>
+        <li>Your identity here is your domain and your key. Nothing more is asked, and nothing more is kept.</li>
+      </ul>
+
+      <h2>Listing</h2>
+      <ul>
+        <li>An approved Section is listed while its records are valid and unexpired, and dropped as soon as they aren't.</li>
+        <li>Open Sections are listed and linked, and visitors are sent to them by <em>next</em> and <em>random</em>. Closed and pending Sections are listed without links, and nobody is sent to them.</li>
+      </ul>
+
+      <h2>What isn't welcome</h2>
+      <ul>
+        <li>Nothing illegal, no pirated software or media, no malware or phishing, and no harassment.</li>
+        <li>The operator may delist any Section at any time, at their discretion. Delisting takes it off this hub at once, and this hub then refuses its dock requests until it's reinstated.</li>
+        <li>Each hub decides what it lists. Being delisted here never touches your domain, your keys, or your standing with any other hub.</li>
+        <li>To report a Section listed here, email <a href="mailto:abuse@timda.space">abuse@timda.space</a>.</li>
+      </ul>
+
+      <h2>Leaving</h2>
+      <ul>
+        <li>Delete your records, or let <code>expires</code> pass. You're off the station at the next check. Nobody's permission is ever needed, and nothing is held against your domain if you come back (unless this hub delisted it).</li>
+        <li>Lose a key? Publish a new one and delete the old one. A key never needs another key's approval: control of your DNS is the only authority.</li>
+      </ul>
+
+      <h2>Contact</h2>
+      <p>Reports about a listed Section: <a href="mailto:abuse@timda.space">abuse@timda.space</a>. A docked Section can also send the hub a signed message by <a href="/econopod#wormhole-post">Wormhole Post</a>, addressed to <code>timda.space</code>, with no names needed.</p>
+    </section>

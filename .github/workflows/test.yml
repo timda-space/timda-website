@@ -1,0 +1,39 @@
+# Tests on every pull request and push. The specs and the shared engine
+# (timda1.mjs, sshsig.mjs) are written in the timda.space repo; it's checked
+# out alongside, on the matching branch, so the copies here are tested against
+# the originals and a stale copy can't ship.
+name: test
+
+on:
+  pull_request:
+  push:
+    branches: [main, staging]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: timda-website
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository_owner }}/timda.space
+          ref: ${{ github.base_ref || github.ref_name }}
+          path: timda.space
+          # Not needed once timda.space is public; until then, a read-only token for it.
+          token: ${{ secrets.TIMDA_SPACE_READ_TOKEN || github.token }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install age (for the sealed-mail tests)
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq age
+      - name: The pages in public/ are built from pages/ and specs/
+        working-directory: timda-website
+        run: node tools/build.mjs && git diff --exit-code -- public
+      - name: Tests (the hub, the tools, the copies, and the timda CLI against the hub)
+        working-directory: timda-website
+        run: node --test hub/*.test.mjs tools/*.test.mjs

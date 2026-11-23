@@ -1,0 +1,35 @@
+<!--
+place: rnd
+title: Research & Development
+description: Where the station's protocols are made: the TIMDA specs, and the timda tool.
+-->
+    <section class="welcome">
+      <p>Research &amp; Development keeps the station's protocols humming. Please do not touch the protocols.</p>
+    </section>
+    <section class="shoot" aria-labelledby="specs">
+      <h2 id="specs">The specs</h2>
+      <p>Everything TIMDA does is written down, small enough to read in an evening, and open to anyone to implement:</p>
+      <ul>
+        <li><a href="/rnd/timda-1"><strong>TIMDA-1: The <code>_timda</code> finger records</strong></a>: the DNS records a Section publishes: a core record, one record per key, and optional airlock, charter, setting, button, banner and inbox records.</li>
+        <li><a href="/rnd/timda-2"><strong>TIMDA-2: Signed statements</strong></a>: how a Section speaks, signed with <code>ssh-keygen</code> and checked against its DNS. Docking, the Board, and where hubs take statements.</li>
+        <li><a href="/rnd/timda-3"><strong>TIMDA-3: Inboxes</strong></a>: signed mail between Sections, held by a hub until it's collected, and sealed with <a href="https://age-encryption.org">age</a> if the recipient asks.</li>
+      </ul>
+      <p><strong>TIMDA-1 and TIMDA-2 are stable (1.0):</strong> they'll only grow in ways that leave today's records and signatures working. <strong>TIMDA-3 is a draft,</strong> working on this hub and still open to change from what its first users find.</p>
+      <p>They're published under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>: copy them, translate them, build on them, with credit to timda.space.</p>
+    </section>
+
+    <section class="shoot" aria-labelledby="tools">
+      <h2 id="tools">The tools</h2>
+      <p>Nothing here needs special software. <code>dig</code>, <code>ssh-keygen</code>, <code>age</code> and <code>curl</code> do it all, and every page that asks you to sign something shows how. For convenience there's <strong><code>timda</code></strong>, a command-line tool with no dependencies beyond Node 20:</p>
+<pre tabindex="0"><code>timda finger section72.net      who is this Section?
+timda plan --from section.toml  every record to publish, checked
+timda dock                      ask the hub to list you
+timda mail                      collect your mail, checked
+timda mail send section76.net   write to another Section</code></pre>
+      <p>Its parts also run here in your browser, with no JavaScript sent to you: the <a href="/econopod#beacon-test">beacon test</a> is <code>timda finger</code>, and the <a href="/econopod#record-planner">record planner</a> is <code>timda plan</code>. The tool's code is <a href="https://opensource.org/license/mit/">MIT</a>-licensed, and the hub's is <a href="https://www.gnu.org/licenses/agpl-3.0.html">AGPL-3.0</a>, so you can run your own.</p>
+    </section>
+
+    <section class="shoot" aria-labelledby="ooc">
+      <h2 id="ooc">Out of character</h2>
+      <p>The protocol is the product, not this site. Hubs are post offices, not authorities: a Section's identity is its domain and its key, and anyone can check any signature against DNS without trusting a hub at all. If you'd rather write TIMDA in Go, Python or shell, the specs are all you need.</p>
+    </section>

@@ -1,0 +1,46 @@
+<!--
+place: exec
+title: Technocratic Incorporated Executive Suites
+description: Where Technocratic Incorporated runs the station, and the Board reviews docking requests.
+-->
+    <!-- board-result:start --><!-- board-result:end -->
+    <section class="welcome">
+      <p>The Executive Suites occupy the finest real estate in the dome. Technocratic Incorporated's leadership thanks you for your interest, and for not visiting.</p>
+      <p>The Board reviews every docking request personally. Resolutions are carried by signature. Arrivals and departures are announced on the <a href="/">Arrivals board</a>.</p>
+    </section>
+
+    <section class="readout" aria-labelledby="board-form">
+      <h2 id="board-form">Board resolutions</h2>
+      <p>For the hub's operator. A resolution is a statement signed with a key from <code>_key._timda.timda.space</code>; anyone else's is refused.</p>
+      <form class="dock" method="post" action="/api/board" enctype="multipart/form-data">
+        <p><label>Resolution <span class="hint">(e.g. motion.txt)</span><br><input type="file" name="statement" required></label></p>
+        <p><label>Signature <span class="hint">(motion.txt.sig)</span><br><input type="file" name="signature" required></label></p>
+        <p><button type="submit">Table the motion</button></p>
+      </form>
+    </section>
+
+    <section class="shoot" aria-labelledby="ooc">
+      <h2 id="ooc">Out of character</h2>
+      <p>This is the <strong>governance</strong> desk. New Sections that dock wait here for review: nothing of theirs (name, links, button, banner) appears on this hub until the operator approves them. The operator can also delist a Section at any time, which takes it off the hub at once. See the <a href="/charter">charter</a> for the rules.</p>
+      <details class="rollup">
+        <summary><h3>How to table a motion</h3></summary>
+      <p>Write a statement with one of these types, sign it with the hub's key, and upload both above:</p>
+<pre tabindex="0"><code>cat &gt; motion.txt &lt;&lt;EOF
+timda-statement: 1
+type: board-approve
+from: timda.space
+hub: timda.space
+issued: $(date -u +%Y-%m-%dT%H:%M:%SZ)
+nonce: $(head -c 16 /dev/urandom | base64 | tr '+/' '-_' | tr -d =)
+section: section76.net
+EOF
+ssh-keygen -Y sign -f &lt;hub key&gt; -n timda motion.txt</code></pre>
+      <ul>
+        <li><code>board-agenda</code>: what's waiting for review, approved and delisted (no <code>section:</code> needed).</li>
+        <li><code>board-approve</code>: list a Section that's waiting.</li>
+        <li><code>board-delist</code>: take a Section off the hub at once, and refuse its dock requests. Add <code>reason:</code> if you like.</li>
+        <li><code>board-reinstate</code>: undo a delisting.</li>
+      </ul>
+      <p>Or, with the <a href="/rnd#tools"><code>timda</code></a> tool: <code>timda board agenda</code>, <code>timda board approve section76.net</code>, and so on, from a folder whose <code>section.toml</code> is the hub's.</p>
+      </details>
+    </section>

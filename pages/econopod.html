@@ -1,0 +1,100 @@
+<!--
+place: mast
+title: EconoPod Mast-er Suites
+description: The station's communication matrix, and its mandatory economy sleep pods. Test your Section's beacon and signals, and send and collect mail by Wormhole Post, here.
+-->
+    <section class="welcome">
+      <p>High above the dome, the station's communication matrix hums day and night. Every message aboard passes through here, signed and verified. Some are sealed.</p>
+      <p>The matrix shares the mast with the CozyCocoon economy issue sleep pods. Rest is mandatory. Comfort is economical.</p>
+    </section>
+
+    <section class="readout" aria-labelledby="beacon-test">
+      <h2 id="beacon-test">Beacon test</h2>
+      <p>Point the mast at a domain and it reports what it hears: the core record, keys, links, button, banner and DNSSEC, read live from DNS.</p>
+      <form class="dock" method="get" action="/econopod#beacon-test">
+        <p><label>Domain<br><input type="text" name="domain" required placeholder="section72.net" autocomplete="off" autocapitalize="none" spellcheck="false"></label></p>
+        <p><button type="submit">Listen</button></p>
+      </form>
+      <!-- beacon:start --><!-- beacon:end -->
+    </section>
+
+    <section class="readout" aria-labelledby="signal-test">
+      <h2 id="signal-test">Signal test</h2>
+      <p>Check a signed statement against its Section's keys before you send it anywhere. Nothing is docked or kept, and the statement can still be used afterwards.</p>
+      <form class="dock" method="post" action="/econopod#signal-test" enctype="multipart/form-data">
+        <p><label>Statement <span class="hint">(e.g. dock.txt)</span><br><input type="file" name="statement" required></label></p>
+        <p><label>Signature <span class="hint">(e.g. dock.txt.sig)</span><br><input type="file" name="signature" required></label></p>
+        <p><button type="submit">Check signal</button></p>
+      </form>
+      <!-- signal:start --><!-- signal:end -->
+    </section>
+
+    <section class="readout" aria-labelledby="wormhole-post">
+      <h2 id="wormhole-post">Wormhole Post</h2>
+      <p class="fineprint">Powered by TWIRL, the Technocratic Wormhole-Integrated Relay Link. Postage: free, pending review by the Board.</p>
+      <p>Signed mail between docked Sections, sent through the mast and held here for 30 days until it's collected. Hand the relay a signed statement: a <code>message</code> to send, an <code>inbox</code> to collect your mail, or an <code>inbox-delete</code> to clear it.</p>
+      <form class="dock" method="post" action="/api/mail#wormhole-post" enctype="multipart/form-data">
+        <p><label>Statement <span class="hint">(e.g. msg.txt)</span><br><input type="file" name="statement" required></label></p>
+        <p><label>Signature <span class="hint">(e.g. msg.txt.sig)</span><br><input type="file" name="signature" required></label></p>
+        <p><button type="submit">Transmit</button></p>
+      </form>
+      <!-- post:start --><!-- post:end -->
+      <details class="rollup">
+        <summary><h3>Open an inbox</h3></summary>
+      <p>Publish one more record, naming this hub. Add your <a href="https://age-encryption.org">age</a> public key too, and senders must encrypt to it, so not even the hub can read your mail. Without one, it can. The record planner below will write it for you.</p>
+<pre tabindex="0"><code>_inbox._timda.section76.net.  300 IN TXT "v=TIMDA1; hub=timda.space; age=age1…"</code></pre>
+      <p>Mail is only carried between Sections docked and approved here. Delete the record to close your inbox. Mail already held stays yours to collect until it expires.</p>
+      </details>
+      <details class="rollup">
+        <summary><h3>Send a message</h3></summary>
+<pre tabindex="0"><code>cat &gt; msg.txt &lt;&lt;EOF
+timda-statement: 1
+type: message
+from: section72.net
+to: section76.net
+hub: timda.space
+issued: $(date -u +%Y-%m-%dT%H:%M:%SZ)
+nonce: $(head -c 16 /dev/urandom | base64 | tr '+/' '-_' | tr -d =)
+subject: The modem on bench 3
+
+Your station keeps answering our outside line. Is that you?
+EOF
+ssh-keygen -Y sign -f ~/.ssh/&lt;your key&gt; -n timda msg.txt</code></pre>
+      <p>Then upload <code>msg.txt</code> and <code>msg.txt.sig</code> above. The subject is optional, up to 100 characters; the whole message, at most 8 KiB.</p>
+      <p>If the recipient's inbox record has an age key, encrypt the text to it, and add a header saying so:</p>
+<pre tabindex="0"><code>subject: The modem on bench 3
+encrypted: age
+
+$(echo 'Your station keeps answering our outside line.' | age -a -r age1…)</code></pre>
+            <p>Or, with the <a href="/rnd#tools"><code>timda</code></a> tool: <code>timda mail send section76.net --subject "The modem on bench 3"</code>. It opens your editor, and seals the message with age by itself if the recipient asks.</p>
+      </details>
+      <details class="rollup">
+        <summary><h3>Collect and clear your mail</h3></summary>
+<pre tabindex="0"><code>cat &gt; inbox.txt &lt;&lt;EOF
+timda-statement: 1
+type: inbox
+from: section76.net
+hub: timda.space
+issued: $(date -u +%Y-%m-%dT%H:%M:%SZ)
+nonce: $(head -c 16 /dev/urandom | base64 | tr '+/' '-_' | tr -d =)
+EOF
+ssh-keygen -Y sign -f ~/.ssh/&lt;your key&gt; -n timda inbox.txt</code></pre>
+      <p>Upload both above and your mail is shown, with each message as it was signed, so you can check the sender yourself. Reading never deletes. To clear some, make the same statement with <code>type: inbox-delete</code> and a line <code>delete: 2f6c1e0a9b, 7d41aa03c2</code> (message IDs, or <code>all</code>).</p>
+            <p>Or, with the <a href="/rnd#tools"><code>timda</code></a> tool: <code>timda mail</code> collects your mail, checks every signature against DNS, and opens sealed mail with your age key; <code>timda mail delete all</code> clears it.</p>
+      </details>
+    </section>
+
+    <section class="readout" aria-labelledby="record-planner">
+      <h2 id="record-planner">Record planner</h2>
+      <p>Fill this in and the mast writes your TIMDA records for you, checked, in whatever form your DNS host wants: a table to type into its dashboard, a zone file to import, or OpenTofu for Cloudflare or Route 53. Nothing is saved.</p>
+      <!-- planner-form:start --><p class="hint">The planner needs the hub's live side, which isn't answering. Try again in a moment.</p><!-- planner-form:end -->
+      <!-- planner:start --><!-- planner:end -->
+    </section>
+
+    <section class="shoot" aria-labelledby="ooc">
+      <h2 id="ooc">Out of character</h2>
+      <p>This is the <strong>signal desk</strong>: Sections speak by signing statements with a key published in their own DNS records, and anyone can check a signature against DNS with nothing but <code>ssh-keygen</code>. No accounts, no names.</p>
+      <p>It's also the <strong>beacon listener</strong>: the hub re-checks a docked Section's records whenever it lists or routes to it, reusing each check for no longer than the records' TTL, and lists or delists it to match.</p>
+      <p>The <strong>Wormhole Post</strong> is <a href="/rnd">TIMDA-3</a>: messages are signed statements, held by the hub until the recipient signs for them. The hub keeps each one exactly as signed, so the recipient can check the sender against DNS without trusting the hub. With an age key, the hub can't read them either; it still knows who wrote to whom, and when.</p>
+      <p>The <strong>beacon test</strong> is <code>timda finger</code> in your browser, and the <strong>record planner</strong> is <code>timda plan</code>. The <strong>signal test</strong> runs the same checks the hub runs on a dock request, without docking anything. Make a statement to test with <code>ssh-keygen -Y sign -n timda</code>; any statement type works.</p>
+    </section>

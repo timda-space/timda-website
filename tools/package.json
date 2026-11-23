@@ -1,0 +1,8 @@
+{
+  "name": "timda-website-tools",
+  "private": true,
+  "description": "Offline helpers; nothing here is deployed.",
+  "devDependencies": {
+    "mermaid": "11.17.2"
+  }
+}

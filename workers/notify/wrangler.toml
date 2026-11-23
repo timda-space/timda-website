@@ -1,0 +1,13 @@
+# Deploy from this folder with: npx wrangler deploy
+# then set the address it writes to (kept out of the repo):  npx wrangler secret put TO
+name = "timda-notify"
+main = "index.js"
+compatibility_date = "2026-11-01"
+workers_dev = false        # no public URL: only the hub, through its service binding
+preview_urls = false
+
+[vars]
+FROM = "board@timda.space" # must be on a domain with Email Routing enabled
+
+[[send_email]]
+name = "EMAIL"

@@ -1,0 +1,12 @@
+[
+  { "id": "mast",      "slug": "econopod",        "deck": "Mast",       "name": "EconoPod Mast-er Suites" },
+  { "id": "exec",      "slug": "executive-suites", "deck": "Dome",       "name": "Technocratic Incorporated Executive Suites" },
+  { "id": "mall",      "slug": "hypermall",       "deck": "Dome",       "name": "EconoMatic HyperMall" },
+  { "id": "lounge",    "slug": "lounge",          "deck": "Dome",       "name": "Great Ideas Observation Lounge", "note": "(Now with AuthentiGlass*)" },
+  { "id": "arrivals",  "slug": "",                "deck": "Dome",       "name": "Deep Thoughts Station Arrivals" },
+  { "id": "marketing", "slug": "positivity",      "deck": "Upper ring", "name": "Department of Aggressive Positivity" },
+  { "id": "rnd",       "slug": "rnd",             "deck": "Lower ring", "name": "Research & Development" },
+  { "id": "tower",     "slug": "ivory-tower",     "deck": "Spine",      "name": "The Ivory Tower", "cluster": "SPINE" },
+  { "id": "disk",      "slug": "detonation-disk", "deck": "Base",       "name": "InstaSafe Rapid Crew Detachment Detonation Disk" },
+  { "id": "pods",      "slug": "comforpods",      "deck": "Underside",  "name": "ComforPod “Reasonable Rest” Cost-Conscious Habitation Pods", "note": "“Our employees, almost as good as credits.”" }
+]

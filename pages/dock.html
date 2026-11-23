@@ -1,0 +1,80 @@
+<!--
+title: Dock a Section
+description: Ask TIMDA's hub to list your Section, with a statement signed by your key.
+-->
+    <!-- dock-result:start --><!-- dock-result:end -->
+    <section class="welcome">
+      <p>Technocratic Incorporated welcomes all Sections to dock. Please present a signed request. Our docking clamps are rated for most domains.</p>
+    </section>
+
+    <section class="readout" aria-labelledby="dock-form">
+      <h2 id="dock-form">Docking request</h2>
+      <form class="dock" method="post" action="/api/dock" enctype="multipart/form-data">
+        <p><label>Statement <span class="hint">(dock.txt)</span><br><input type="file" name="statement" required></label></p>
+        <p><label>Signature <span class="hint">(dock.txt.sig)</span><br><input type="file" name="signature" required></label></p>
+        <p><button type="submit">Request docking</button></p>
+      </form>
+    </section>
+
+    <section class="shoot" aria-labelledby="ooc">
+      <h2 id="ooc">Out of character</h2>
+      <p>Docking lists your Section in the HyperMall and puts it on the ring (<em>next</em> and <em>random</em>). You need your Section's TIMDA records published first, with a key you hold.</p>
+      <details class="rollup">
+        <summary><h2 id="your-records">Your records</h2></summary>
+      <p><strong>The easy way:</strong> the <a href="/econopod#record-planner">record planner</a> writes them all for you, checked, in your DNS host's format. Or by hand:</p>
+      <p>Two TXT records make a Section: a <strong>core</strong> record saying what it is, and a <strong>key</strong> record per key you'll sign with. Use the same short TTL on every one (300 seconds is good):</p>
+<pre tabindex="0"><code>_timda.section72.net.      300 IN TXT "v=TIMDA1; name=Section 72; status=open; concept=The 90s in the future"
+_key._timda.section72.net. 300 IN TXT "v=TIMDA1; key=ed25519:Sh3t8eI9jGdu3pCBRClSq/rwL9Rdarzzyc633dYVq70="</code></pre>
+      <ul>
+        <li><code>name=</code> up to 48 characters; <code>concept=</code> (optional) up to 120. Percent-encode any <code>;</code> or <code>%</code>.</li>
+        <li><code>status=</code> is <code>open</code> (listed and linked), <code>closed</code> (listed, not linked) or <code>pending</code> (greyed out while you set up).</li>
+        <li>The key value is your Ed25519 SSH public key's raw 32 bytes in base64. From a <code>.pub</code> file:
+<pre tabindex="0"><code>echo "ed25519:$(awk '{print $2}' ~/.ssh/&lt;your key&gt;.pub | base64 -d | tail -c 32 | base64)"</code></pre></li>
+        <li>Optional extras, each its own record: <code>_airlock</code> (where visitors land; defaults to your homepage), <code>_charter</code> (your rules), <code>_setting</code> (your lore), and the button and banner below. Each is <code>v=TIMDA1; url=https://&hellip;</code>, and all but the setting must be on your own domain.</li>
+      </ul>
+      <p>Then check it all with the <a href="/econopod#beacon-test">beacon test</a>.</p>
+      </details>
+      <details class="rollup">
+        <summary><h2 id="how-to-dock">How to dock</h2></summary>
+      <p><strong>1. Write the request</strong> (replace the domain):</p>
+<pre tabindex="0"><code>cat &gt; dock.txt &lt;&lt;EOF
+timda-statement: 1
+type: dock-request
+from: section72.net
+hub: timda.space
+issued: $(date -u +%Y-%m-%dT%H:%M:%SZ)
+nonce: $(head -c 16 /dev/urandom | base64 | tr '+/' '-_' | tr -d =)
+EOF</code></pre>
+      <p><strong>2. Sign it</strong> with a key from your <code>_key._timda</code> records:</p>
+<pre tabindex="0"><code>ssh-keygen -Y sign -f ~/.ssh/&lt;your key&gt; -n timda dock.txt</code></pre>
+      <p><strong>3. Upload</strong> <code>dock.txt</code> and <code>dock.txt.sig</code> above, within 10 minutes of signing.</p>
+      <p>Or, with the <a href="/rnd#tools"><code>timda</code></a> tool and your <code>section.toml</code>, all three steps are one: <code>timda dock</code>.</p>
+      <p>The hub checks the signature against your live DNS records, then adds you to its registry, where you wait for review by the hub's operator. Once you're approved, you're listed while your records stay valid. A pending Section shows greyed out, and visitors are only sent to open ones. To leave, delete your records: no request needed.</p>
+      </details>
+      <details class="rollup">
+        <summary><h2 id="launch-button">Launch button</h2></summary>
+      <p>Once you're docked, put the station's launch button on your site. It's an 88&times;31 button that sends visitors through a random wormhole:</p>
+      <p class="ring-preview"><a href="/random"><img src="/ring/timda-88x31.png" srcset="/ring/timda-176x62.png 2x" width="88" height="31" alt="TIMDA: launch to a random Section"></a></p>
+      <p>Download <a href="/ring/timda-88x31.png" download>timda-88x31.png</a> and <a href="/ring/timda-176x62.png" download>timda-176x62.png</a> (for sharp screens) and host them on your own site, so your visitors' browsers never contact the hub until they click. Then add:</p>
+<pre tabindex="0"><code>&lt;a href="https://timda.space/random"&gt;&lt;img src="/timda-88x31.png"
+  srcset="/timda-176x62.png 2x" width="88" height="31"
+  alt="TIMDA: launch to a random Section"&gt;&lt;/a&gt;</code></pre>
+      <p>And, if you like, links round the ring (replace the domain with yours, so <em>next</em> knows where you are):</p>
+<pre tabindex="0"><code>&lt;a href="https://timda.space/"&gt;TIMDA&lt;/a&gt; &middot;
+&lt;a href="https://timda.space/next?from=section72.net"&gt;Next Section&lt;/a&gt; &middot;
+&lt;a href="https://timda.space/random"&gt;Random&lt;/a&gt;</code></pre>
+      <p>No JavaScript, no tracking, nothing to sign up for. The button is free to use on any TIMDA Section.</p>
+      </details>
+      <details class="rollup">
+        <summary><h2 id="your-banner">A banner for the Observation Lounge</h2></summary>
+      <p>The <a href="/lounge">Observation Lounge</a> rotates banners from open Sections that opt in. Publish a 468&times;60 banner, with an optional caption of up to 140 characters:</p>
+<pre tabindex="0"><code>_banner._timda.section72.net. 300 IN TXT "v=TIMDA1; url=https://section72.net/468x60.png; caption=The 90s, in the future."</code></pre>
+      <p>A PNG or GIF (animated is fine), exactly 468&times;60 or 936&times;120, at most 64&nbsp;KiB, hosted on your own domain. Percent-encode any <code>;</code> or <code>%</code> in the caption, as <code>%3B</code> and <code>%25</code>. Check it with the <a href="/econopod#beacon-test">beacon test</a>.</p>
+      </details>
+      <details class="rollup">
+        <summary><h2 id="your-button">Your own button</h2></summary>
+      <p>Got an 88&times;31 of your own? Publish it and your HyperMall storefront shows it:</p>
+<pre tabindex="0"><code>_button._timda.section72.net. 300 IN TXT "v=TIMDA1; url=https://section72.net/88x31.png"</code></pre>
+      <p>A PNG or GIF (animated is fine), exactly 88&times;31 or 176&times;62, at most 16&nbsp;KiB, hosted on your own domain. The hub fetches it, checks it and serves its own copy, so the HyperMall never makes visitors' browsers contact your site.</p>
+      </details>
+    </section>

@@ -1,0 +1,40 @@
+%% TIMDA station map. Edit this, then run: node tools/render-map.mjs && node tools/build.mjs
+%% Our own diagram, drawn from the station anatomy (not traced from the art).
+%% Node ids match the ids in pages/places.json, which supplies each box's full name and page.
+%% Keep labels short: the full name appears on hover or first tap.
+flowchart TB
+  subgraph MAST["MAST"]
+    mast["EconoPod Suites"]
+  end
+
+  subgraph DOME["DOME"]
+    direction TB
+    exec["Executive Suites"]
+    mall["HyperMall"]
+    lounge["Observation Lounge"]
+    arrivals["Arrivals"]
+    exec ~~~ mall
+    lounge ~~~ arrivals
+  end
+
+  subgraph SPINE["SPINE · THE IVORY TOWER"]
+    direction TB
+    subgraph UPPER["UPPER RING"]
+      marketing["Aggressive Positivity"]
+    end
+    subgraph LOWER["LOWER RING"]
+      rnd["R&D"]
+    end
+    UPPER --- LOWER
+  end
+
+  subgraph BASE["BASE"]
+    disk["Detonation Disk"]
+  end
+
+  subgraph UNDERSIDE["UNDERSIDE"]
+    pods["ComforPods"]
+  end
+
+  MAST --- DOME --- SPINE --- BASE --- UNDERSIDE
+

@@ -17,11 +17,8 @@
 </p>
 
 <p align="center">
-  <a href="https://timda.space/random"><img src="public/ring/timda-176x62.png" width="88" height="31" alt="TIMDA: launch to a random Section"></a>
-</p>
-
-<p align="center">
-  <a href="https://github.com/timda-space/timda-website/actions/workflows/test.yml"><img src="https://github.com/timda-space/timda-website/actions/workflows/test.yml/badge.svg?branch=main" alt="test status"></a>
+  <a href="https://timda.space/random"><img align="middle" src="public/ring/timda-176x62.png" width="88" height="31" alt="TIMDA: launch to a random Section"></a>
+  <a href="https://github.com/timda-space/timda-website/actions/workflows/test.yml"><img align="middle" src="https://github.com/timda-space/timda-website/actions/workflows/test.yml/badge.svg?branch=main" alt="test status"></a>
 </p>
 
 ---

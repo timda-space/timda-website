@@ -2,11 +2,7 @@
   <img src="public/art/station.png" width="640" alt="TIMDA: pixel art of a retro-futurist space station">
 </p>
 
-<div align="center">
-
-# TIMDA hub
-
-</div>
+<h1 align="center">TIMDA hub</h1>
 
 <p align="center">
   <strong>A webring as objet d'art.</strong><br>
